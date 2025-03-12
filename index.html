@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventario - Pizzería</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('f.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .titulo {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 3s ease-in-out forwards;
+            color: #fff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .inventario {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            padding: 0 20px;
+        }
+        .producto {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .producto:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        .producto h3 {
+            font-size: 1.6em;
+            margin-bottom: 10px;
+            color: #ff6347;
+        }
+        .producto p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #c82333;
+            transform: translateY(-3px);
+        }
+        .formulario {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .formulario h2 {
+            font-size: 1.8em;
+            color: #333;
+        }
+        .formulario input {
+            padding: 10px;
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .formulario input:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+        }
+        .formulario button {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .formulario button:hover {
+            background-color: #c82333;
+        }
+        .volver {
+            background-color: #17a2b8;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .volver:hover {
+            background-color: #138496;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-top: 50px;
+            animation: slideIn 1s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .login-form input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-form button {
+            background-color: #f0ad4e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-form button:hover {
+            background-color: #ec971f;
+        }
+        .graficas {
+            display: none;
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+        }
+        .graficas h2 {
+            font-size: 2em;
+        }
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form" id="loginForm">
+        <h2>Iniciar sesión</h2>
+        <input type="text" id="username" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button onclick="login()">Iniciar sesión</button>
+    </div>
+
+    <div class="inventario" id="inventario" style="display:none;">
+        <img src="Viterbos.jpg" alt="Logo Viterbos" class="logo">
+        <div class="titulo">Gestión de Inventario - Pizzería</div>
+
+        <!-- Productos/Ingredientes -->
+        <div class="producto">
+            <h3>Jamón</h3>
+            <p>Cantidad: <span id="cantidad-jamon">50</span> unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('jamon')">Modificar</button>
+            </div>
+        </div>
+
+        <div class="producto">
+            <h3>Queso</h3>
+            <p>Cantidad: <span id="cantidad-queso">30</span> unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('queso')">Modificar</button>
+            </div>
+        </div>
+
+        <div class="producto">
+            <h3>Pechuga de Pollo</h3>
+            <p>Cantidad: <span id="cantidad-pollo">25</span> unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('pollo')">Modificar</button>
+            </div>
+        </div>
+
+        <div class="producto">
+            <h3>Champiñones</h3>
+            <p>Cantidad: <span id="cantidad-champinones">100</span> unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('champinones')">Modificar</button>
+            </div>
+        </div>
+
+        <!-- Botón para mostrar las gráficas -->
+        <button onclick="mostrarGraficas()">Ver gráficas</button>
+    </div>
+
+    <div class="graficas" id="graficas">
+        <h2>Gráficas de Inventario</h2>
+        <!-- Gráficas de Pastel y Barras -->
+        <canvas id="pieChart" width="400" height="400"></canvas>
+        <canvas id="barChart" width="400" height="400"></canvas>
+        <button class="volver" onclick="volverAInventario()">Volver al inventario</button>
+    </div>
+
+    <!-- Formulario de Modificación -->
+    <div class="formulario" id="formularioModificar" style="display: none;">
+        <h2>Modificar <span id="ingredienteNombre"></span></h2>
+        <input type="number" id="nuevaCantidad" placeholder="Nueva cantidad">
+        <button onclick="actualizarCantidad()">Actualizar</button>
+        <button onclick="cerrarFormulario()">Cerrar</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Variables globales para las gráficas
+        let pieChart, barChart;
+
+        // Función de inicio de sesión
+        function login() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('inventario').style.display = 'block';
+        }
+
+        // Función para mostrar las gráficas
+        function mostrarGraficas() {
+            document.getElementById('inventario').style.display = 'none';
+            document.getElementById('graficas').style.display = 'block';
+            crearGraficas();
+        }
+
+        // Función para volver al inventario
+        function volverAInventario() {
+            document.getElementById('graficas').style.display = 'none';
+            document.getElementById('inventario').style.display = 'block';
+        }
+
+        // Crear gráficas
+        function crearGraficas() {
+            var ctxPie = document.getElementById('pieChart').getContext('2d');
+            var ctxBar = document.getElementById('barChart').getContext('2d');
+
+            pieChart = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
+                    datasets: [{
+                        data: [
+                            parseInt(document.getElementById('cantidad-jamon').innerText),
+                            parseInt(document.getElementById('cantidad-queso').innerText),
+                            parseInt(document.getElementById('cantidad-pollo').innerText),
+                            parseInt(document.getElementById('cantidad-champinones').innerText)
+                        ],
+                        backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + ' unidades';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
+                    datasets: [{
+                        label: 'Cantidad',
+                        data: [
+                            parseInt(document.getElementById('cantidad-jamon').innerText),
+                            parseInt(document.getElementById('cantidad-queso').innerText),
+                            parseInt(document.getElementById('cantidad-pollo').innerText),
+                            parseInt(document.getElementById('cantidad-champinones').innerText)
+                        ],
+                        backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c'],
+                        borderColor: ['#e94e77', '#e69447', '#45acc3', '#4ca04c'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Función para mostrar el formulario de modificación
+        function mostrarFormulario(ingrediente) {
+            document.getElementById('ingredienteNombre').innerText = ingrediente;
+            document.getElementById('formularioModificar').style.display = 'block';
+        }
+
+        // Función para cerrar el formulario de modificación
+        function cerrarFormulario() {
+            document.getElementById('formularioModificar').style.display = 'none';
+        }
+
+        // Función para actualizar la cantidad del ingrediente
+        function actualizarCantidad() {
+            var ingrediente = document.getElementById('ingredienteNombre').innerText.toLowerCase();
+            var nuevaCantidad = document.getElementById('nuevaCantidad').value;
+            if (nuevaCantidad !== "" && !isNaN(nuevaCantidad)) {
+                // Actualizar la cantidad en el HTML
+                document.getElementById('cantidad-' + ingrediente).innerText = nuevaCantidad;
+
+                // Actualizar las gráficas
+                actualizarGraficas(ingrediente, nuevaCantidad);
+
+                cerrarFormulario();
+            } else {
+                alert("Por favor, ingresa una cantidad válida.");
+            }
+        }
+
+        // Función para actualizar las gráficas
+        function actualizarGraficas(ingrediente, nuevaCantidad) {
+            // Obtener el índice del ingrediente en las gráficas
+            const ingredientes = ['jamon', 'queso', 'pollo', 'champinones'];
+            const index = ingredientes.indexOf(ingrediente);
+
+            if (index !== -1) {
+                // Actualizar la gráfica de pastel
+                pieChart.data.datasets[0].data[index] = parseInt(nuevaCantidad);
+                pieChart.update();
+
+                // Actualizar la gráfica de barras
+                barChart.data.datasets[0].data[index] = parseInt(nuevaCantidad);
+                barChart.update();
+            }
+        }
+    </script>
+</body>
+</html>

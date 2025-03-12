@@ -203,7 +203,7 @@
         <!-- Productos/Ingredientes -->
         <div class="producto">
             <h3>Jamón</h3>
-            <p>Cantidad: 50 unidades</p>
+            <p>Cantidad: <span id="cantidad-jamon">50</span> unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('jamon')">Modificar</button>
             </div>
@@ -211,7 +211,7 @@
 
         <div class="producto">
             <h3>Queso</h3>
-            <p>Cantidad: 30 unidades</p>
+            <p>Cantidad: <span id="cantidad-queso">30</span> unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('queso')">Modificar</button>
             </div>
@@ -219,7 +219,7 @@
 
         <div class="producto">
             <h3>Pechuga de Pollo</h3>
-            <p>Cantidad: 25 unidades</p>
+            <p>Cantidad: <span id="cantidad-pollo">25</span> unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('pollo')">Modificar</button>
             </div>
@@ -227,7 +227,7 @@
 
         <div class="producto">
             <h3>Champiñones</h3>
-            <p>Cantidad: 100 unidades</p>
+            <p>Cantidad: <span id="cantidad-champinones">100</span> unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('champinones')">Modificar</button>
             </div>
@@ -245,18 +245,19 @@
         <button class="volver" onclick="volverAInventario()">Volver al inventario</button>
     </div>
 
-    <!-- Formulario de Registro (No ejecutado) -->
-    <div class="formulario" id="formularioRegistro">
-        <h2>Formulario de Registro</h2>
-        <input type="text" placeholder="Nombre">
-        <input type="email" placeholder="Correo electrónico">
-        <input type="password" placeholder="Contraseña">
-        <input type="password" placeholder="Confirmar contraseña">
-        <button>Registrar</button>
+    <!-- Formulario de Modificación -->
+    <div class="formulario" id="formularioModificar" style="display: none;">
+        <h2>Modificar <span id="ingredienteNombre"></span></h2>
+        <input type="number" id="nuevaCantidad" placeholder="Nueva cantidad">
+        <button onclick="actualizarCantidad()">Actualizar</button>
+        <button onclick="cerrarFormulario()">Cerrar</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Variables globales para las gráficas
+        let pieChart, barChart;
+
         // Función de inicio de sesión
         function login() {
             document.getElementById('loginForm').style.display = 'none';
@@ -281,12 +282,17 @@
             var ctxPie = document.getElementById('pieChart').getContext('2d');
             var ctxBar = document.getElementById('barChart').getContext('2d');
 
-            var pieChart = new Chart(ctxPie, {
+            pieChart = new Chart(ctxPie, {
                 type: 'pie',
                 data: {
                     labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
                     datasets: [{
-                        data: [50, 30, 25, 100], // Datos aleatorios de cantidades
+                        data: [
+                            parseInt(document.getElementById('cantidad-jamon').innerText),
+                            parseInt(document.getElementById('cantidad-queso').innerText),
+                            parseInt(document.getElementById('cantidad-pollo').innerText),
+                            parseInt(document.getElementById('cantidad-champinones').innerText)
+                        ],
                         backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c']
                     }]
                 },
@@ -301,15 +307,21 @@
                             }
                         }
                     }
-                }});
+                }
+            });
 
-            var barChart = new Chart(ctxBar, {
+            barChart = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
                     labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
                     datasets: [{
                         label: 'Cantidad',
-                        data: [50, 30, 25, 100], // Datos aleatorios de cantidades
+                        data: [
+                            parseInt(document.getElementById('cantidad-jamon').innerText),
+                            parseInt(document.getElementById('cantidad-queso').innerText),
+                            parseInt(document.getElementById('cantidad-pollo').innerText),
+                            parseInt(document.getElementById('cantidad-champinones').innerText)
+                        ],
                         backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c'],
                         borderColor: ['#e94e77', '#e69447', '#45acc3', '#4ca04c'],
                         borderWidth: 1
@@ -324,6 +336,51 @@
                     }
                 }
             });
+        }
+
+        // Función para mostrar el formulario de modificación
+        function mostrarFormulario(ingrediente) {
+            document.getElementById('ingredienteNombre').innerText = ingrediente;
+            document.getElementById('formularioModificar').style.display = 'block';
+        }
+
+        // Función para cerrar el formulario de modificación
+        function cerrarFormulario() {
+            document.getElementById('formularioModificar').style.display = 'none';
+        }
+
+        // Función para actualizar la cantidad del ingrediente
+        function actualizarCantidad() {
+            var ingrediente = document.getElementById('ingredienteNombre').innerText.toLowerCase();
+            var nuevaCantidad = document.getElementById('nuevaCantidad').value;
+            if (nuevaCantidad !== "" && !isNaN(nuevaCantidad)) {
+                // Actualizar la cantidad en el HTML
+                document.getElementById('cantidad-' + ingrediente).innerText = nuevaCantidad;
+
+                // Actualizar las gráficas
+                actualizarGraficas(ingrediente, nuevaCantidad);
+
+                cerrarFormulario();
+            } else {
+                alert("Por favor, ingresa una cantidad válida.");
+            }
+        }
+
+        // Función para actualizar las gráficas
+        function actualizarGraficas(ingrediente, nuevaCantidad) {
+            // Obtener el índice del ingrediente en las gráficas
+            const ingredientes = ['jamon', 'queso', 'pollo', 'champinones'];
+            const index = ingredientes.indexOf(ingrediente);
+
+            if (index !== -1) {
+                // Actualizar la gráfica de pastel
+                pieChart.data.datasets[0].data[index] = parseInt(nuevaCantidad);
+                pieChart.update();
+
+                // Actualizar la gráfica de barras
+                barChart.data.datasets[0].data[index] = parseInt(nuevaCantidad);
+                barChart.update();
+            }
         }
     </script>
 </body>

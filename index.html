@@ -139,116 +139,191 @@
         .volver:hover {
             background-color: #138496;
         }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-top: 50px;
+            animation: slideIn 1s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .login-form input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-form button {
+            background-color: #f0ad4e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-form button:hover {
+            background-color: #ec971f;
+        }
+        .graficas {
+            display: none;
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+        }
+        .graficas h2 {
+            font-size: 2em;
+        }
+        canvas {
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
-    <img src="Viterbos.jpg" alt="Logo Viterbos" class="logo">
-    <div class="titulo">Gestión de Inventario - Pizzería</div>
+    <div class="login-form" id="loginForm">
+        <h2>Iniciar sesión</h2>
+        <input type="text" id="username" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button onclick="login()">Iniciar sesión</button>
+    </div>
 
-    <div class="inventario">
-        <!-- Producto 1 -->
+    <div class="inventario" id="inventario" style="display:none;">
+        <img src="Viterbos.jpg" alt="Logo Viterbos" class="logo">
+        <div class="titulo">Gestión de Inventario - Pizzería</div>
+
+        <!-- Productos/Ingredientes -->
         <div class="producto">
             <h3>Jamón</h3>
             <p>Cantidad: 50 unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('jamon')">Modificar</button>
             </div>
-            <div class="formulario" id="formulario-jamon">
-                <h2>Modificar Jamón</h2>
-                <label for="cantidad-jamon">Cantidad:</label>
-                <input type="number" id="cantidad-jamon" placeholder="Cantidad a añadir o retirar" min="1">
-                <button onclick="guardarModificacion('jamon')">Guardar</button>
-                <button class="volver" onclick="ocultarFormulario('jamon')">Volver</button>
-            </div>
         </div>
 
-        <!-- Producto 2 -->
-        <div class="producto">
-            <h3>Tocino</h3>
-            <p>Cantidad: 30 unidades</p>
-            <div class="botones">
-                <button onclick="mostrarFormulario('tocino')">Modificar</button>
-            </div>
-            <div class="formulario" id="formulario-tocino">
-                <h2>Modificar Tocino</h2>
-                <label for="cantidad-tocino">Cantidad:</label>
-                <input type="number" id="cantidad-tocino" placeholder="Cantidad a añadir o retirar" min="1">
-                <button onclick="guardarModificacion('tocino')">Guardar</button>
-                <button class="volver" onclick="ocultarFormulario('tocino')">Volver</button>
-            </div>
-        </div>
-
-        <!-- Producto 3 -->
-        <div class="producto">
-            <h3>Pepperoni</h3>
-            <p>Cantidad: 40 unidades</p>
-            <div class="botones">
-                <button onclick="mostrarFormulario('pepperoni')">Modificar</button>
-            </div>
-            <div class="formulario" id="formulario-pepperoni">
-                <h2>Modificar Pepperoni</h2>
-                <label for="cantidad-pepperoni">Cantidad:</label>
-                <input type="number" id="cantidad-pepperoni" placeholder="Cantidad a añadir o retirar" min="1">
-                <button onclick="guardarModificacion('pepperoni')">Guardar</button>
-                <button class="volver" onclick="ocultarFormulario('pepperoni')">Volver</button>
-            </div>
-        </div>
-
-        <!-- Producto 4 -->
-        <div class="producto">
-            <h3>Harina</h3>
-            <p>Cantidad: 100 kg</p>
-            <div class="botones">
-                <button onclick="mostrarFormulario('harina')">Modificar</button>
-            </div>
-            <div class="formulario" id="formulario-harina">
-                <h2>Modificar Harina</h2>
-                <label for="cantidad-harina">Cantidad:</label>
-                <input type="number" id="cantidad-harina" placeholder="Cantidad a añadir o retirar" min="1">
-                <button onclick="guardarModificacion('harina')">Guardar</button>
-                <button class="volver" onclick="ocultarFormulario('harina')">Volver</button>
-            </div>
-        </div>
-
-        <!-- Producto 5 -->
         <div class="producto">
             <h3>Queso</h3>
-            <p>Cantidad: 60 kg</p>
+            <p>Cantidad: 30 unidades</p>
             <div class="botones">
                 <button onclick="mostrarFormulario('queso')">Modificar</button>
             </div>
-            <div class="formulario" id="formulario-queso">
-                <h2>Modificar Queso</h2>
-                <label for="cantidad-queso">Cantidad:</label>
-                <input type="number" id="cantidad-queso" placeholder="Cantidad a añadir o retirar" min="1">
-                <button onclick="guardarModificacion('queso')">Guardar</button>
-                <button class="volver" onclick="ocultarFormulario('queso')">Volver</button>
+        </div>
+
+        <div class="producto">
+            <h3>Pechuga de Pollo</h3>
+            <p>Cantidad: 25 unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('pollo')">Modificar</button>
             </div>
         </div>
+
+        <div class="producto">
+            <h3>Champiñones</h3>
+            <p>Cantidad: 100 unidades</p>
+            <div class="botones">
+                <button onclick="mostrarFormulario('champinones')">Modificar</button>
+            </div>
+        </div>
+
+        <!-- Botón para mostrar las gráficas -->
+        <button onclick="mostrarGraficas()">Ver gráficas</button>
     </div>
 
+    <div class="graficas" id="graficas">
+        <h2>Gráficas de Inventario</h2>
+        <!-- Gráficas de Pastel y Barras -->
+        <canvas id="pieChart" width="400" height="400"></canvas>
+        <canvas id="barChart" width="400" height="400"></canvas>
+        <button class="volver" onclick="volverAInventario()">Volver al inventario</button>
+    </div>
+
+    <!-- Formulario de Registro (No ejecutado) -->
+    <div class="formulario" id="formularioRegistro">
+        <h2>Formulario de Registro</h2>
+        <input type="text" placeholder="Nombre">
+        <input type="email" placeholder="Correo electrónico">
+        <input type="password" placeholder="Contraseña">
+        <input type="password" placeholder="Confirmar contraseña">
+        <button>Registrar</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function mostrarFormulario(producto) {
-            // Oculta todos los formularios primero
-            document.querySelectorAll('.formulario').forEach(form => {
-                form.style.display = 'none';
+        // Función de inicio de sesión
+        function login() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('inventario').style.display = 'block';
+        }
+
+        // Función para mostrar las gráficas
+        function mostrarGraficas() {
+            document.getElementById('inventario').style.display = 'none';
+            document.getElementById('graficas').style.display = 'block';
+            crearGraficas();
+        }
+
+        // Función para volver al inventario
+        function volverAInventario() {
+            document.getElementById('graficas').style.display = 'none';
+            document.getElementById('inventario').style.display = 'block';
+        }
+
+        // Crear gráficas
+        function crearGraficas() {
+            var ctxPie = document.getElementById('pieChart').getContext('2d');
+            var ctxBar = document.getElementById('barChart').getContext('2d');
+
+            var pieChart = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
+                    datasets: [{
+                        data: [50, 30, 25, 100], // Datos aleatorios de cantidades
+                        backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + ' unidades';
+                                }
+                            }
+                        }
+                    }
+                }});
+
+            var barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Jamón', 'Queso', 'Pechuga de Pollo', 'Champiñones'],
+                    datasets: [{
+                        label: 'Cantidad',
+                        data: [50, 30, 25, 100], // Datos aleatorios de cantidades
+                        backgroundColor: ['#ff6347', '#f0ad4e', '#5bc0de', '#5cb85c'],
+                        borderColor: ['#e94e77', '#e69447', '#45acc3', '#4ca04c'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
             });
-            // Muestra el formulario del producto seleccionado
-            document.getElementById(`formulario-${producto}`).style.display = 'block';
-        }
-
-        function ocultarFormulario(producto) {
-            document.getElementById(`formulario-${producto}`).style.display = 'none';
-        }
-
-        function guardarModificacion(producto) {
-            let cantidad = document.getElementById(`cantidad-${producto}`).value;
-            if (cantidad <= 0) {
-                alert("Por favor ingrese una cantidad válida.");
-                return;
-            }
-            alert(`Se ha modificado el inventario de ${producto}. Cantidad: ${cantidad}`);
-            ocultarFormulario(producto);
         }
     </script>
 </body>
